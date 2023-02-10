@@ -4,10 +4,13 @@ import { DeepPartial, MigrationInterface, QueryRunner } from "typeorm";
 import { Farm } from "../entities/farm.entity";
 
 export class farmsSampleData1675890790724 implements MigrationInterface {
+  private getRandomNumber(maxLimit: number){
+    return Math.floor(Math.random() * maxLimit)
+  }
   public async up(queryRunner: QueryRunner): Promise<void> {
     //ToDo : we must have several -about 30 - different address of farms
     const farmAddress = "Firskovvej 53 B, 2800 Kongens Lyngby, Denmark";
-    const farmCoordinates = "55.76975769626489,12.525743683908928";
+    const farmCoordinates = `${this.getRandomNumber(55)}.76975769626489,${this.getRandomNumber(12)}.525743683908928`;
 
     const usersRepository = queryRunner.manager.getRepository(User);
 
@@ -24,12 +27,12 @@ export class farmsSampleData1675890790724 implements MigrationInterface {
       const user: DeepPartial<User> = {
         email: `mail-${i}@mail.com`,
         address: userAddress[i],
-        coordinates: await getCoordinatesByAddress(userAddress[i]),
+        coordinates: `${this.getRandomNumber(55)}.694630399994,${this.getRandomNumber(12)}.4832723`,
         hashedPassword: await hashPassword("9gS44*LsA*dK"),
       };
       const createdUser = usersRepository.create(user);
       const newUser = await usersRepository.save(createdUser);
-      const distanceDriving: DistanceDriving = await getDrivingDistance(newUser.coordinates, farmCoordinates);
+      const distanceDriving: DistanceDriving = { text: `${this.getRandomNumber(100)} km`, value: this.getRandomNumber(100) };
 
       for (let j = 0; j < 30; j++) {
         const farm: Farm = {
@@ -40,8 +43,8 @@ export class farmsSampleData1675890790724 implements MigrationInterface {
           coordinates: farmCoordinates,
           distance_text: distanceDriving.text,
           distance_value: distanceDriving.value,
-          size: Math.floor(Math.random() * 10000),
-          yield: Math.floor(Math.random() * 10000),
+          size: this.getRandomNumber(10000),
+          yield: this.getRandomNumber(10000),
         } as Farm;
         const createdFarm = farmsRepository.create(farm);
         await farmsRepository.save(createdFarm);
