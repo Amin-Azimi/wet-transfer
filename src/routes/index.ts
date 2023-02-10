@@ -1,0 +1,13 @@
+import { Router } from "express";
+import auth from "./auth.routes";
+import user from "./user.routes";
+import farm from "./farm.routes";
+import authMiddleware from "middlewares/auth.middleware";
+
+const routes = Router();
+
+routes.use("/auth", auth);
+routes.use("/users", user);
+routes.use("/v1/farms", authMiddleware, farm);
+
+export default routes;
